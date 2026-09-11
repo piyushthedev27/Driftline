@@ -5,6 +5,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { World } from "./World";
 import { Car } from "./Car";
+import { Reflections } from "./Reflections";
 import { runtime, useGame, useSettings, useTelemetry } from "../store";
 import { stepVehicle } from "../game/vehicle";
 import { keys } from "../game/input";
@@ -238,6 +239,7 @@ export function GameScene() {
           shadow-camera-far={350}
           shadow-bias={-0.001}
         />
+        <Reflections intensity={night ? 0.12 : 0.4} />
         <World />
         <Simulation />
         {quality === "high" && phase === "MENU" && (

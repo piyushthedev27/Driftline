@@ -292,7 +292,7 @@ export const Car = forwardRef<THREE.Group>(function Car(_, ref) {
               ])}
             />
             <Stroke
-              color="#55231f"
+              color="#303537"
               radius={0.006}
               points={mirror([
                 [1.072, 0.87, 0.87],
@@ -304,7 +304,7 @@ export const Car = forwardRef<THREE.Group>(function Car(_, ref) {
             <Box
               at={[side * 1.076, 0.81, -0.36]}
               size={[0.025, 0.035, 0.19]}
-              color="#762a25"
+              color="#33393c"
             />
             <Panel
               color="#111e25"
@@ -349,11 +349,11 @@ export const Car = forwardRef<THREE.Group>(function Car(_, ref) {
             <Panel
               color="#20262c"
               points={mirror([
-                [0.3, 0.875, -2.205],
-                [0.88, 0.876, -2.205],
-                [1.01, 0.76, -2.348],
-                [0.77, 0.7, -2.419],
-                [0.32, 0.746, -2.417],
+                [0.26, 0.772, -2.45],
+                [0.87, 0.777, -2.45],
+                [0.979, 0.676, -2.45],
+                [0.81, 0.593, -2.45],
+                [0.3, 0.63, -2.45],
               ])}
             />
             <Stroke
@@ -361,14 +361,14 @@ export const Car = forwardRef<THREE.Group>(function Car(_, ref) {
               radius={0.019}
               glow
               points={mirror([
-                [0.34, 0.854, -2.247],
-                [0.866, 0.854, -2.247],
-                [0.959, 0.769, -2.36],
-                [0.758, 0.729, -2.437],
-                [0.375, 0.761, -2.435],
+                [0.3, 0.75, -2.47],
+                [0.85, 0.755, -2.47],
+                [0.933, 0.68, -2.47],
+                [0.78, 0.625, -2.47],
+                [0.36, 0.65, -2.47],
               ])}
             />
-            <mesh position={[side * 0.64, 0.789, -2.395]}>
+            <mesh position={[side * 0.64, 0.656, -2.481]}>
               <boxGeometry args={[0.44, 0.022, 0.023]} />
               <meshStandardMaterial
                 ref={side === 1 ? brake : undefined}

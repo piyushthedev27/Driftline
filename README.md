@@ -75,7 +75,7 @@ Race phases are `MENU`, `COUNTDOWN`, `PLAYING`, `PAUSED`, `FINISHED` and `GAME_O
 
 - A deliberately simplified procedural interpretation of the reference art, not a reproduction of its detailed car model or scenery.
 - One mostly level circuit. The bridge and tunnel are simplified structures; there is no elevated road network, suspension simulation, jumping, AI traffic or opponents.
-- Custom planar arcade handling with circular obstacle/road-edge collision. Trees and buildings sit beyond the protected driving boundary rather than using individual physics colliders.
+- Custom planar arcade handling with oriented vehicle-footprint collision against road edges and obstacles. Trees and buildings sit beyond the protected driving boundary rather than using individual physics colliders.
 - Audio is synthesized: engine, boost/skid tone changes, event beeps and an optional ambient chord. It is not recorded automotive sound or a composed soundtrack.
 - Desktop keyboard driving is the target. Small screens get a responsive interface and keyboard guidance, without touch driving controls.
 - The Three.js renderer makes the initial JavaScript bundle approximately 347 KB gzipped. Vite reports its large-chunk advisory; the build succeeds.

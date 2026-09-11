@@ -32,3 +32,13 @@ No human driving review or audio listening assessment is claimed. No real-device
 ## Result-screen integration
 
 Browser fixtures verified time-limit game over, restart, ordered-gate completion, the result screen, saving best time, main-menu return, and the help screen. These fixtures reposition the vehicle to gates; the separate full-circuit system test verifies continuous driving. No page errors occurred.
+
+## Car and clipping correction — 11 September 2026
+
+- Rebuilt the car with a lower cabin, open wheel arches, contoured fenders, inset glazing, angular LED housings, C-shaped rear lamps, multi-spoke wheels, brake discs, side intakes and a slimmer wing. The model is an original procedural interpretation of the supplied reference, not an imported replica.
+- Collision now protects the full vehicle footprint, projects against continuous track segments, and rejects outward velocity during the feedback cooldown. It covers front/rear corners, side contact, reverse and prolonged acceleration into a rail.
+- Reframed the chase camera and constrained its desired position to the driving corridor. Replaced large polygonal impact clouds with small, brief smoke sprites emitted at the rear of the car.
+- Added local procedural environment reflections without downloadable assets.
+- All ten system/regression tests pass, including full two-lap driving, both-rail angled impacts and sustained pressure against a rail.
+- Production build passes. The focused Chrome check reproduced contact at 1148 × 960, verified the footprint remains inside the rail, and rendered front/rear/side inspection views with no page errors.
+- Inspection captures: artifacts/car-front.png, artifacts/car-rear.png, artifacts/car-side.png, artifacts/rail-contact-fixed.png. The optional development-only inspection page is tests/car-showcase.html.

@@ -14,6 +14,7 @@ import {
   X,
   Play,
   RotateCcw,
+  Github,
 } from "lucide-react";
 import { useGame, useSettings, runtime } from "../store";
 import { audio } from "../game/audio";
@@ -58,13 +59,13 @@ export function Menus() {
           <header className="brand-bar">
             <a
               href="#"
-              aria-label="DRIVE home"
+              aria-label="DRIFT LINE home"
               onClick={(e) => {
                 e.preventDefault();
                 setPanel("main");
               }}
             >
-              <span className="brand-mark">//</span> DRIVE
+              <span className="brand-mark">//</span> DRIFT LINE
             </a>
             <span className="edition">VOLUME 01 — THE ALPINE COLLECTION</span>
             <div>
@@ -368,6 +369,14 @@ export function Menus() {
             </span>
             <span className="version">
               BUILT FOR THE OPEN ROAD. <b>v1.0</b>
+              <a
+                className="dev-credit"
+                href="https://github.com/piyushthedev27"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Github size={16} /> PIYUSHTHEDEV27
+              </a>
             </span>
           </footer>
         </>

@@ -422,6 +422,21 @@ kbd {
   font-weight: 400;
   opacity: 0.5;
 }
+.dev-credit {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  color: #e6eddf;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+}
+.dev-credit:hover {
+  opacity: 1;
+}
 .keyboard-note {
   font-size: 7px;
   opacity: 0.55;

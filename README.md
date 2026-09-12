@@ -1,6 +1,8 @@
-# DRIVE
+# DRIFT LINE
 
 A self-contained, playable low-poly arcade racer built from the supplied Markdown brief and all three visual references. Race two laps through eight ordered checkpoint gates around Alpine Coast. Finish within six minutes; your best time stays on this device.
+
+Developed by [piyushthedev27](https://github.com/piyushthedev27).
 
 ## Run locally
 

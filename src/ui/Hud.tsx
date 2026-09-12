@@ -1,6 +1,91 @@
-import { Pause, Flag, Volume2, VolumeX } from "lucide-react";
+import type { PointerEvent } from "react";
+import {
+  Pause,
+  Flag,
+  Volume2,
+  VolumeX,
+  ChevronLeft,
+  ChevronRight,
+  Wind,
+  Zap,
+} from "lucide-react";
 import { useGame, useTelemetry, useSettings } from "../store";
 import { mapPath, LENGTH } from "../game/track";
+import { keys, isTouchDevice } from "../game/input";
+import type { Input } from "../game/vehicle";
+function press(key: keyof Input) {
+  return {
+    onPointerDown: (e: PointerEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      keys[key] = true;
+    },
+    onPointerUp: () => {
+      keys[key] = false;
+    },
+    onPointerCancel: () => {
+      keys[key] = false;
+    },
+  };
+}
+export function TouchControls() {
+  return (
+    <div className="touch-controls">
+      <div className="touch-steer">
+        <button
+          className="touch-button"
+          aria-label="Steer left"
+          {...press("left")}
+        >
+          <ChevronLeft size={30} />
+        </button>
+        <button
+          className="touch-button"
+          aria-label="Steer right"
+          {...press("right")}
+        >
+          <ChevronRight size={30} />
+        </button>
+      </div>
+      <div className="touch-actions">
+        <div className="touch-item">
+          <button
+            className="touch-button touch-small"
+            aria-label="Drift"
+            {...press("drift")}
+          >
+            <Wind size={19} />
+          </button>
+          <span className="touch-caption">DRIFT</span>
+        </div>
+        <div className="touch-item">
+          <button
+            className="touch-button touch-small"
+            aria-label="Nitro"
+            {...press("boost")}
+          >
+            <Zap size={19} />
+          </button>
+          <span className="touch-caption">NITRO</span>
+        </div>
+        <button
+          className="touch-button touch-brake"
+          aria-label="Brake"
+          {...press("down")}
+        >
+          BRAKE
+        </button>
+        <button
+          className="touch-button touch-gas"
+          aria-label="Accelerate"
+          {...press("up")}
+        >
+          GAS
+        </button>
+      </div>
+    </div>
+  );
+}
 export const formatTime = (n: number) =>
   `${Math.floor(n / 60)
     .toString()
@@ -155,7 +240,8 @@ export function Hud() {
         </div>
         <span className="tiny">
           {t.boosting ? "BOOST ENGAGED" : "HOLD"}{" "}
-          {!t.boosting && <kbd>SPACE</kbd>}
+          {!t.boosting && !isTouchDevice() && <kbd>SPACE</kbd>}
+          {!t.boosting && isTouchDevice() && "NITRO"}
         </span>
       </div>
       <div className="driving-controls">
@@ -169,6 +255,10 @@ export function Hud() {
           <kbd>R</kbd> RESTART
         </span>
       </div>
+      {isTouchDevice() &&
+        (g.phase === "PLAYING" || g.phase === "COUNTDOWN") && (
+          <TouchControls />
+        )}
       {t.drifting && (
         <div className="drift-label">
           DRIFT <span>HOLD THE LINE</span>

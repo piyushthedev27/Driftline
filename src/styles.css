@@ -829,6 +829,71 @@ kbd {
   letter-spacing: 1px;
   color: #d6dfd3;
 }
+.touch-controls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 3% max(20px, env(safe-area-inset-bottom));
+  pointer-events: none;
+  z-index: 3;
+}
+.touch-steer,
+.touch-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: auto;
+}
+.touch-actions {
+  flex-direction: column;
+  align-items: flex-end;
+}
+.touch-button {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(19, 43, 45, 0.55);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(5px);
+  color: #f3f5e8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.touch-button:active {
+  background: rgba(229, 240, 181, 0.32);
+  transform: scale(0.93);
+}
+.touch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.touch-small {
+  width: 46px;
+  height: 46px;
+}
+.touch-caption {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #e6eddf;
+  text-shadow: 0 1px 4px rgba(8, 27, 25, 0.6);
+}
+.touch-gas {
+  width: 74px;
+  height: 74px;
+  background: rgba(229, 240, 181, 0.22);
+}
 .driving-controls > span {
   display: flex;
   align-items: center;
@@ -1170,17 +1235,43 @@ kbd {
     display: none;
   }
   .speedometer {
-    transform: scale(0.8);
+    transform: scale(0.62);
     transform-origin: left bottom;
-    bottom: 30px;
+    bottom: 108px;
+  }
+  .gear {
+    right: 6px;
+    top: 56px;
+    padding: 4px 8px 5px;
+    border-left: none;
+    background: rgba(19, 43, 45, 0.55);
+    border-radius: 8px;
+  }
+  .gear span {
+    font-size: 18px;
   }
   .nitro {
-    width: 165px;
-    left: 65%;
-    bottom: 45px;
+    width: 120px;
+    left: 62%;
+    bottom: 130px;
+  }
+  .nitro > div:first-child {
+    font-size: 8px;
   }
   .driving-controls {
     display: none;
+  }
+  .touch-button {
+    width: 48px;
+    height: 48px;
+  }
+  .touch-small {
+    width: 44px;
+    height: 44px;
+  }
+  .touch-gas {
+    width: 62px;
+    height: 62px;
   }
   .gate-toast {
     font-size: 8px;
@@ -1245,11 +1336,20 @@ kbd {
     height: 16px;
   }
   .nitro {
-    width: 130px;
-    left: 73%;
+    width: 100px;
+    left: 65%;
+    bottom: 120px;
+  }
+  .nitro > div:first-child {
+    font-size: 8px;
   }
   .speedometer {
-    transform: scale(0.67);
+    transform: scale(0.52);
+    bottom: 96px;
+  }
+  .gear {
+    right: 10px;
+    top: 60px;
   }
   .menu-footer {
     font-size: 6px;

@@ -3,6 +3,9 @@ import { idleInput } from "./vehicle";
 import { useGame } from "../store";
 import { audio } from "./audio";
 export const keys = { ...idleInput };
+export const isTouchDevice = () =>
+  typeof window !== "undefined" &&
+  (navigator.maxTouchPoints > 0 || "ontouchstart" in window);
 const map: Record<string, keyof typeof keys> = {
   KeyW: "up",
   ArrowUp: "up",

@@ -1,3 +1,5 @@
+import { RaceSetup, ThemeOptions } from "./RaceSetup";
+import { getMap, getVehicle } from "../game/catalog";
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 import {
@@ -49,6 +51,14 @@ export function Menus() {
     g.restart();
   };
   if (g.phase === "COUNTDOWN" || g.phase === "PLAYING") return null;
+  if (g.phase === "MENU" && panel === "main")
+    return (
+      <RaceSetup
+        onStart={start}
+        onHelp={() => setPanel("help")}
+        onSettings={() => setPanel("settings")}
+      />
+    );
   return (
     <div
       ref={root}
@@ -67,7 +77,7 @@ export function Menus() {
             >
               <span className="brand-mark">//</span> DRIFT LINE
             </a>
-            <span className="edition">VOLUME 01 — THE ALPINE COLLECTION</span>
+            <span className="edition">WORLD TOUR — THREE DESTINATIONS</span>
             <div>
               <button
                 className="icon-button"
@@ -94,69 +104,11 @@ export function Menus() {
         </>
       )}
       <section className={`menu-content ${panel !== "main" ? "subpanel" : ""}`}>
-        {panel === "main" && g.phase === "MENU" && (
-          <>
-            <div className="eyebrow enter">
-              <span className="short-line" /> LEAVE THE EVERYDAY BEHIND
-            </div>
-            <h1 className="enter">
-              TAKE THE
-              <br />
-              <em>SCENIC ROUTE.</em>
-            </h1>
-            <p className="menu-description enter">
-              Open roads. Sharp corners. No limits.
-              <br />
-              Find your rhythm on the Alpine Coast.
-            </p>
-            <div className="route-meta enter">
-              <span>
-                <Mountain size={16} /> ALPINE COAST
-              </span>
-              <span>{((LENGTH * 2) / 1000).toFixed(2)} KM</span>
-              <span>02 LAPS</span>
-            </div>
-            <button className="primary enter" onClick={start}>
-              LET’S DRIVE <ArrowUpRight size={25} />
-            </button>
-            <div className="secondary-row enter">
-              <button onClick={() => setPanel("help")}>
-                HOW TO PLAY <ArrowRight size={15} />
-              </button>
-              <button onClick={() => setPanel("settings")}>
-                SETTINGS <Settings2 size={15} />
-              </button>
-            </div>
-            <div className="car-choice enter">
-              <span className="tiny">YOUR RIDE</span>
-              <div>
-                <strong>VORTEX GT</strong>
-                <span>RWD / 6-SPEED / 274 KM/H</span>
-              </div>
-              <div className="swatches">
-                {["#e84836", "#3b9abe", "#eee9d9", "#e6ac31", "#80a745"].map(
-                  (c, i) => (
-                    <button
-                      key={c}
-                      aria-label={`Select ${["red", "blue", "white", "yellow", "green"][i]} car`}
-                      aria-pressed={s.color === c}
-                      style={{ background: c }}
-                      className={s.color === c ? "selected" : ""}
-                      onClick={() => s.set({ color: c })}
-                    >
-                      {s.color === c && <Check size={12} />}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
-          </>
-        )}
         {panel === "main" && g.phase === "PAUSED" && (
           <>
             <span className="eyebrow enter">TAKE A BREATHER</span>
             <h2 className="enter">PIT STOP.</h2>
-            <p className="enter">The coast will be right here.</p>
+            <p className="enter">Your next corner will be right here.</p>
             <button
               className="primary enter"
               onClick={() => {
@@ -188,7 +140,7 @@ export function Menus() {
             <>
               <span className="eyebrow enter">
                 {g.phase === "FINISHED"
-                  ? "THE COAST IS YOURS"
+                  ? "THE CIRCUIT IS YOURS"
                   : "TIME LIMIT REACHED"}
               </span>
               <h2 className="enter">
@@ -198,6 +150,9 @@ export function Menus() {
                 {g.phase === "FINISHED"
                   ? "Two laps. A thousand reasons to come back."
                   : "Keep your speed through the bends and follow the gates."}
+              </p>
+              <p className="eyebrow enter">
+                {getMap(s.mapId).name} / {getVehicle(s.vehicleId).name}
               </p>
               <div className="results enter">
                 <div>
@@ -278,21 +233,7 @@ export function Menus() {
             <span className="eyebrow enter">MAKE IT YOURS</span>
             <h2 className="enter">TUNE YOUR DRIVE.</h2>
             <div className="settings-list enter">
-              <div>
-                <span>Time of day</span>
-                <div className="segmented">
-                  {(["light", "dark"] as const).map((t) => (
-                    <button
-                      key={t}
-                      className={s.theme === t ? "active" : ""}
-                      onClick={() => s.set({ theme: t })}
-                    >
-                      {t === "light" ? <Sun size={14} /> : <Moon size={14} />}{" "}
-                      {t === "light" ? "DAY" : "NIGHT"}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <ThemeOptions />
               {(["sound", "music", "effects"] as const).map((key) => (
                 <div key={key}>
                   <span>
@@ -347,11 +288,11 @@ export function Menus() {
           <aside className="route-card">
             <div>
               <span className="eyebrow">THE ROAD AHEAD</span>
-              <span>01 / 01</span>
+              <span>WORLD TOUR</span>
             </div>
             <MiniMap menu />
-            <h3>Alpine Coast</h3>
-            <p>COASTAL ROADS · MOUNTAIN PASSES</p>
+            <h3>{getMap(s.mapId).name}</h3>
+            <p>{getMap(s.mapId).tag}</p>
             <div className="route-card-footer">
               <span>
                 <Flag size={13} /> TIME ATTACK
@@ -432,7 +373,7 @@ export function Countdown() {
     return null;
   return (
     <div className="countdown" aria-live="assertive">
-      <span>ALPINE COAST</span>
+      <span>{getMap(useSettings.getState().mapId).name.toUpperCase()}</span>
       <div ref={ref}>{count === 0 ? "GO" : count}</div>
       <p>FIND YOUR LINE.</p>
     </div>

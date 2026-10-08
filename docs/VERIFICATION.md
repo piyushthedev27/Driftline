@@ -42,3 +42,13 @@ Browser fixtures verified time-limit game over, restart, ordered-gate completion
 - All ten system/regression tests pass, including full two-lap driving, both-rail angled impacts and sustained pressure against a rail.
 - Production build passes. The focused Chrome check reproduced contact at 1148 × 960, verified the footprint remains inside the rail, and rendered front/rear/side inspection views with no page errors.
 - Inspection captures: artifacts/car-front.png, artifacts/car-rear.png, artifacts/car-side.png, artifacts/rail-contact-fixed.png. The optional development-only inspection page is tests/car-showcase.html.
+
+## Expansion verification — 2026-10-08
+
+- Production build: passed (existing large-bundle advisory remains).
+- Automated gameplay: 21 tests passed, including full two-lap runs for all nine map/vehicle pairs, collision clearance, saved-record isolation, legacy-save migration and race selection locking.
+- Browser interaction: all three destinations, all three vehicles and all four themes selected successfully; saved selection survived reload; race start and pause worked; no JavaScript page errors.
+- Responsive captures: 1440×900, 1366×768 and 390×844; all three mobile setup tabs have no horizontal overflow. Four atmosphere options also verified in settings.
+- Screenshot review prompted improved preview text contrast and removal of the settings footer that crowded the reset control. Existing touch controls and developer credits are retained.
+- Images are in `artifacts/expansion-*.png`; reproducible browser check: `node tests/browser-expansion.cjs` (uses this machine's bundled Playwright and Chrome paths).
+- Vehicles and scenery are procedural low-poly geometry; weather is visual and roads remain mostly flat. No backend or online leaderboard is included.

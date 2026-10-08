@@ -1,33 +1,58 @@
 import * as THREE from "three";
-export const curve = new THREE.CatmullRomCurve3(
-  [
-    [-80, 0, 85],
-    [-115, 0, 30],
-    [-110, 0, -55],
-    [-65, 0, -110],
-    [10, 0, -115],
-    [75, 0, -80],
-    [112, 0, -20],
-    [94, 0, 40],
-    [45, 0, 64],
-    [20, 0, 112],
-    [-35, 0, 125],
-  ].map((p) => new THREE.Vector3(...(p as [number, number, number]))),
-  true,
-  "catmullrom",
-  0.35,
-);
-export const LENGTH = curve.getLength();
-export const ROAD_WIDTH = 15;
-export const points = curve.getSpacedPoints(600).slice(0, 600);
-export function trackAt(t: number, offset = 0) {
-  const p = curve.getPointAt(((t % 1) + 1) % 1);
-  const d = curve.getTangentAt(((t % 1) + 1) % 1);
-  return {
-    x: p.x + d.z * offset,
-    z: p.z - d.x * offset,
-    yaw: Math.atan2(d.x, d.z),
+import { MAPS, getMap, type MapId } from "./catalog";
+export function buildTrack(id: MapId) {
+  const spec = getMap(id);
+  const curve = new THREE.CatmullRomCurve3(
+    spec.points.map((p) => new THREE.Vector3(p[0], 0, p[1])),
+    true,
+    "catmullrom",
+    0.35,
+  );
+  const points = curve.getSpacedPoints(600).slice(0, 600),
+    length = curve.getLength();
+  const at = (t: number, offset = 0) => {
+    const u = ((t % 1) + 1) % 1,
+      p = curve.getPointAt(u),
+      d = curve.getTangentAt(u);
+    return {
+      x: p.x + d.z * offset,
+      z: p.z - d.x * offset,
+      yaw: Math.atan2(d.x, d.z),
+    };
   };
+  const obstacles = [0.105, 0.235, 0.405, 0.57, 0.715, 0.865].map((t, i) => ({
+    ...at(t, i % 2 ? 4.8 : -4.8),
+    radius: 1.05,
+  }));
+  const mapPath =
+    points
+      .filter((_, i) => i % 5 === 0)
+      .map(
+        (p, i) => `${i ? "L" : "M"}${(p.x + 140) * 0.6},${(p.z + 145) * 0.6}`,
+      )
+      .join(" ") + " Z";
+  return { id, curve, points, length, at, obstacles, mapPath };
+}
+export const tracks = Object.fromEntries(
+  MAPS.map((m) => [m.id, buildTrack(m.id)]),
+) as Record<MapId, ReturnType<typeof buildTrack>>;
+let active = tracks.alpine;
+export let curve = active.curve,
+  points = active.points,
+  LENGTH = active.length,
+  obstacles = active.obstacles,
+  mapPath = active.mapPath;
+export const ROAD_WIDTH = 15;
+export function setActiveTrack(id: MapId) {
+  active = tracks[id] || tracks.alpine;
+  curve = active.curve;
+  points = active.points;
+  LENGTH = active.length;
+  obstacles = active.obstacles;
+  mapPath = active.mapPath;
+}
+export function trackAt(t: number, offset = 0) {
+  return active.at(t, offset);
 }
 export function nearest(x: number, z: number) {
   let best = Infinity,
@@ -61,11 +86,3 @@ export function nearest(x: number, z: number) {
     p: { x: px, z: pz },
   };
 }
-export const obstacles = [0.105, 0.235, 0.405, 0.57, 0.715, 0.865].map(
-  (t, i) => ({ ...trackAt(t, i % 2 ? 4.8 : -4.8), radius: 1.05 }),
-);
-export const mapPath =
-  points
-    .filter((_, i) => i % 5 === 0)
-    .map((p, i) => `${i ? "L" : "M"}${(p.x + 140) * 0.6},${(p.z + 145) * 0.6}`)
-    .join(" ") + " Z";

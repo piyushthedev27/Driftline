@@ -4,17 +4,33 @@ import { nearest, obstacles } from "./track";
 export const CAR_HALF_WIDTH = 1.27;
 export const CAR_HALF_LENGTH = 2.53;
 export const RAIL_INNER_LIMIT = 9.4;
-type Body = { x: number; z: number; yaw: number; vx: number; vz: number };
+type Body = {
+  x: number;
+  z: number;
+  yaw: number;
+  vx: number;
+  vz: number;
+  halfWidth?: number;
+  halfLength?: number;
+};
 type Contact = (nx: number, nz: number, closingSpeed: number) => void;
 
-export function footprint(body: Pick<Body, "x" | "z" | "yaw">) {
+export function footprint(
+  body: Pick<Body, "x" | "z" | "yaw" | "halfWidth" | "halfLength">,
+) {
   const c = Math.cos(body.yaw),
     s = Math.sin(body.yaw);
-  return [-CAR_HALF_LENGTH, 0, CAR_HALF_LENGTH].flatMap((z) =>
-    [-CAR_HALF_WIDTH, CAR_HALF_WIDTH].map((x) => ({
-      x: body.x + c * x + s * z,
-      z: body.z - s * x + c * z,
-    })),
+  return [
+    -(body.halfLength ?? CAR_HALF_LENGTH),
+    0,
+    body.halfLength ?? CAR_HALF_LENGTH,
+  ].flatMap((z) =>
+    [-(body.halfWidth ?? CAR_HALF_WIDTH), body.halfWidth ?? CAR_HALF_WIDTH].map(
+      (x) => ({
+        x: body.x + c * x + s * z,
+        z: body.z - s * x + c * z,
+      }),
+    ),
   );
 }
 
@@ -58,16 +74,22 @@ export function resolveCollisions(body: Body, contact: Contact) {
     if (dx * dx + dz * dz > 25) continue;
     const x = dx * c - dz * s,
       z = dx * s + dz * c;
-    const qx = Math.max(-CAR_HALF_WIDTH, Math.min(CAR_HALF_WIDTH, x));
-    const qz = Math.max(-CAR_HALF_LENGTH, Math.min(CAR_HALF_LENGTH, z));
+    const qx = Math.max(
+      -(body.halfWidth ?? CAR_HALF_WIDTH),
+      Math.min(body.halfWidth ?? CAR_HALF_WIDTH, x),
+    );
+    const qz = Math.max(
+      -(body.halfLength ?? CAR_HALF_LENGTH),
+      Math.min(body.halfLength ?? CAR_HALF_LENGTH, z),
+    );
     let nx = qx - x,
       nz = qz - z,
       distance = Math.hypot(nx, nz),
       penetration = obstacle.radius - distance;
     if (penetration <= 0) continue;
     if (distance < 0.0001) {
-      const ex = CAR_HALF_WIDTH - Math.abs(x),
-        ez = CAR_HALF_LENGTH - Math.abs(z);
+      const ex = (body.halfWidth ?? CAR_HALF_WIDTH) - Math.abs(x),
+        ez = (body.halfLength ?? CAR_HALF_LENGTH) - Math.abs(z);
       if (ex < ez) {
         nx = -Math.sign(x || 1);
         nz = 0;

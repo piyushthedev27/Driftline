@@ -1390,3 +1390,762 @@ kbd {
     display: none;
   }
 }
+/* World Tour setup: a single deliberate selection surface over the live scene. */
+.race-setup {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    90deg,
+    var(--setup-surface, #142f30) 0%,
+    color-mix(in srgb, var(--setup-surface, #142f30) 95%, transparent) 28%,
+    transparent 75%
+  );
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #8ca18b #152c30;
+}
+.setup-header {
+  height: 82px;
+  margin: 0 4%;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.setup-brand {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.setup-brand i {
+  font-size: 28px;
+  letter-spacing: -6px;
+  color: var(--accent);
+  margin-right: 8px;
+}
+.setup-brand > span {
+  border-left: 1px solid var(--line);
+  padding-left: 20px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #c4d0ca;
+}
+.setup-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.setup-header-actions > span {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  margin-right: 20px;
+  opacity: 0.65;
+}
+.setup-panel {
+  position: relative;
+  margin: 40px 0 170px 5%;
+  width: 440px;
+  max-width: 43%;
+}
+.setup-panel h1 {
+  font-size: clamp(42px, 4vw, 64px);
+  margin: 16px 0 12px;
+  line-height: 1.02;
+}
+.setup-intro {
+  font-size: 12px;
+  line-height: 1.65;
+  color: #c2cec7;
+  margin: 0 0 23px;
+}
+.setup-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  gap: 20px;
+}
+.setup-tabs button {
+  padding: 13px 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-size: 11px;
+  color: #a9beb4;
+}
+.setup-tabs button[aria-selected="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.option-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  margin: 20px 0 13px;
+  color: #bfcec3;
+}
+.option-heading > span + span {
+  font-size: 7px;
+  opacity: 0.65;
+}
+.destination-options,
+.garage-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.destination-option,
+.garage-option {
+  background: color-mix(in srgb, var(--setup-surface) 82%, transparent);
+  border: 1px solid #adc1b333;
+  text-align: left;
+  color: #e7eddf;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 13px;
+  width: 100%;
+  min-height: 87px;
+  position: relative;
+}
+.destination-option:hover,
+.garage-option:hover {
+  background: color-mix(in srgb, var(--setup-surface) 75%, #71887b);
+}
+.destination-option.selected,
+.garage-option.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--setup-surface) 85%, var(--accent));
+}
+.route-art {
+  width: 78px;
+  height: 66px;
+  flex-shrink: 0;
+  position: relative;
+  background: #263f41;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.route-canyon {
+  background: #654736;
+  color: #e8b18b;
+}
+.route-frost {
+  background: #48606a;
+  color: #dce8df;
+}
+.route-alpine {
+  background: #314d44;
+  color: #d2e1b5;
+}
+.route-art svg {
+  height: 61px;
+  width: 61px;
+  transform: rotate(-12deg);
+}
+.route-art small {
+  position: absolute;
+  bottom: 5px;
+  left: 6px;
+  font-size: 7px;
+  opacity: 0.6;
+}
+.option-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+}
+.option-kicker {
+  font-size: 7px;
+  letter-spacing: 1.4px;
+  color: #b6c6b9;
+}
+.option-copy strong {
+  font-size: 17px;
+  letter-spacing: 0.1px;
+  font-weight: 500;
+}
+.option-copy > small {
+  font-size: 8px;
+  color: #b9c9bd;
+  letter-spacing: 0.45px;
+}
+.option-copy b,
+.setup-summary b {
+  font-weight: 400;
+  padding: 0 5px;
+  opacity: 0.4;
+}
+.selection-mark {
+  display: flex;
+  color: var(--accent);
+  opacity: 0.8;
+}
+.garage-option {
+  gap: 9px;
+  min-height: 78px;
+  padding: 10px;
+}
+.vehicle-sketch {
+  width: 98px;
+  height: 48px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.garage-option .option-copy strong {
+  font-size: 16px;
+}
+.garage-option .option-copy small {
+  font-size: 7px;
+}
+.handling-stats {
+  display: flex;
+  gap: 18px;
+  margin-top: 17px;
+}
+.handling-stats > div {
+  flex: 1;
+}
+.handling-stats span {
+  font-size: 8px;
+  color: #bfcfc1;
+}
+.handling-stats > div > div {
+  height: 3px;
+  background: #afbfad25;
+  margin-top: 7px;
+}
+.handling-stats i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+.setup-paint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 17px;
+}
+.setup-paint > span {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+}
+.theme-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.atmosphere-option {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--setup-surface) 86%, transparent);
+  padding: 0 0 14px;
+  text-align: left;
+  position: relative;
+  color: #edf0e6;
+  overflow: hidden;
+}
+.atmosphere-option.selected {
+  border-color: var(--accent);
+}
+.atmosphere-option > span:nth-child(2) {
+  display: block;
+  padding: 13px 13px 0;
+}
+.atmosphere-option strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+}
+.atmosphere-option small {
+  display: block;
+  font-size: 8px;
+  line-height: 1.6;
+  margin-top: 6px;
+  color: #c2cfc4;
+}
+.atmosphere-option > svg {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #f8f4d2;
+}
+.sky-swatch {
+  height: 63px;
+  display: block;
+  background: #91c2ce;
+  position: relative;
+  overflow: hidden;
+}
+.sky-swatch:after {
+  content: "";
+  position: absolute;
+  left: -8%;
+  bottom: -20px;
+  width: 90%;
+  height: 70px;
+  background: #516d68;
+  clip-path: polygon(0 100%, 25% 34%, 40% 60%, 66% 5%, 100% 100%);
+}
+.sky-swatch b {
+  position: absolute;
+  right: -5%;
+  bottom: -30px;
+  width: 70%;
+  height: 85px;
+  background: #789388;
+  clip-path: polygon(0 100%, 48% 15%, 100% 100%);
+}
+.sky-swatch i {
+  position: absolute;
+  right: 25px;
+  top: 14px;
+  width: 17px;
+  height: 17px;
+  background: #f6edc7;
+  border-radius: 50%;
+}
+.sky-sunset {
+  background: #cb9784;
+}
+.sky-sunset:after {
+  background: #6a585d;
+}
+.sky-sunset b {
+  background: #917779;
+}
+.sky-dark {
+  background: #1b3049;
+}
+.sky-dark:after {
+  background: #233e50;
+}
+.sky-dark b {
+  background: #3a5360;
+}
+.sky-dark i {
+  background: #d9e9ef;
+  width: 12px;
+  height: 12px;
+}
+.sky-overcast {
+  background: #9caeb9;
+}
+.sky-overcast:after {
+  background: #596e7a;
+}
+.sky-overcast b {
+  background: #798f97;
+}
+.sky-overcast i {
+  background: #c8d2d6;
+  box-shadow: 12px 4px 0 3px #c8d2d6;
+  border-radius: 5px;
+  right: 45px;
+  top: 20px;
+}
+.setup-note {
+  font-size: 10px;
+  line-height: 1.7;
+  color: #c0cbbf;
+  margin: 17px 0;
+}
+.preview-caption {
+  position: absolute;
+  right: 5%;
+  bottom: 195px;
+  width: 330px;
+  max-width: 32%;
+  text-shadow: 0 2px 8px #0d272a80;
+}
+.preview-caption h2 {
+  font-size: 34px;
+  margin: 14px 0 9px;
+}
+.preview-caption p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #e1e9dc;
+}
+.preview-caption > div {
+  display: flex;
+  gap: 17px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  margin-top: 14px;
+}
+.preview-caption > div > span + span {
+  border-left: 1px solid var(--line);
+  padding-left: 17px;
+}
+.preview-caption .eyebrow {
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+.setup-footer {
+  position: fixed;
+  bottom: 0;
+  left: 4%;
+  right: 4%;
+  padding: 20px 0 15px;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  align-items: center;
+  gap: 16px 35px;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(
+    0deg,
+    var(--setup-surface),
+    color-mix(in srgb, var(--setup-surface) 96%, transparent)
+  );
+  z-index: 4;
+}
+.setup-summary > .eyebrow {
+  font-size: 7px;
+  color: #a5bbaf;
+}
+.setup-summary strong {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  margin: 8px 0;
+}
+.setup-summary strong i {
+  font-size: 17px;
+  font-style: normal;
+  color: #8ba091;
+}
+.setup-summary small {
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #b9cbbb;
+}
+.setup-footer .primary {
+  min-height: 57px;
+}
+.setup-bottom {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 7px;
+  color: #a7bdaf;
+  letter-spacing: 0.8px;
+}
+.setup-bottom > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.setup-bottom kbd {
+  font-size: 7px;
+  padding: 3px 5px;
+}
+.setup-bottom a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 7px;
+}
+.setup-touch-note {
+  display: none;
+}
+.settings-list > .theme-options {
+  display: grid;
+  min-height: 0;
+  border: 0;
+  margin-bottom: 14px;
+}
+.settings-list .sky-swatch {
+  height: 30px;
+}
+.settings-list .atmosphere-option small {
+  display: none;
+}
+.settings-list .atmosphere-option {
+  padding-bottom: 10px;
+}
+.settings-list .atmosphere-option > span:nth-child(2) {
+  padding-top: 9px;
+}
+.settings-list .atmosphere-option strong {
+  font-size: 11px;
+}
+.sunset .nitro-bars i.charged,
+.overcast .nitro-bars i.charged,
+.dark .nitro-bars i.charged,
+.rpm i.on {
+  background: var(--accent);
+}
+@media (min-width: 1600px) {
+  .setup-panel {
+    width: 490px;
+    margin-top: 52px;
+  }
+  .destination-option {
+    min-height: 100px;
+  }
+  .route-art {
+    width: 90px;
+    height: 76px;
+  }
+  .option-copy strong {
+    font-size: 19px;
+  }
+  .preview-caption {
+    bottom: 210px;
+    width: 380px;
+  }
+}
+@media (max-height: 800px) and (min-width: 901px) {
+  .setup-header {
+    height: 65px;
+  }
+  .setup-panel {
+    margin-top: 23px;
+    margin-bottom: 155px;
+    width: 430px;
+  }
+  .setup-panel h1 {
+    font-size: 43px;
+    margin: 10px 0;
+  }
+  .setup-intro {
+    font-size: 10px;
+    margin-bottom: 13px;
+  }
+  .setup-tabs button {
+    padding: 10px 0;
+  }
+  .option-heading {
+    margin: 13px 0 9px;
+  }
+  .destination-option {
+    min-height: 72px;
+    padding: 7px 10px;
+  }
+  .route-art {
+    height: 52px;
+    width: 64px;
+  }
+  .route-art svg {
+    height: 49px;
+  }
+  .garage-option {
+    min-height: 64px;
+    padding: 5px 10px;
+  }
+  .handling-stats,
+  .setup-paint {
+    margin-top: 12px;
+  }
+  .setup-footer {
+    padding: 14px 0 11px;
+    gap: 12px 25px;
+  }
+  .sky-swatch {
+    height: 47px;
+  }
+  .preview-caption {
+    bottom: 165px;
+  }
+  .setup-note {
+    font-size: 9px;
+  }
+}
+@media (max-width: 900px) {
+  .setup-header {
+    height: 67px;
+  }
+  .setup-brand {
+    font-size: 16px;
+  }
+  .setup-brand > span,
+  .setup-header-actions > span {
+    display: none;
+  }
+  .setup-panel {
+    width: 440px;
+    max-width: 76%;
+    margin: 28px 0 195px 6%;
+  }
+  .setup-panel h1 {
+    font-size: 48px;
+  }
+  .preview-caption {
+    display: none;
+  }
+  .race-setup {
+    background: linear-gradient(
+      90deg,
+      var(--setup-surface),
+      color-mix(in srgb, var(--setup-surface) 84%, transparent) 62%,
+      color-mix(in srgb, var(--setup-surface) 45%, transparent)
+    );
+  }
+  .setup-footer {
+    grid-template-columns: 1fr 190px;
+    gap: 15px;
+  }
+  .setup-summary strong {
+    font-size: 13px;
+    gap: 8px;
+  }
+  .setup-summary small {
+    font-size: 6px;
+    letter-spacing: 0.4px;
+  }
+  .setup-footer .primary {
+    font-size: 10px;
+    padding: 0 16px;
+  }
+}
+@media (max-width: 560px) {
+  .setup-panel {
+    max-width: none;
+    width: auto;
+    margin: 24px 5% 200px;
+  }
+  .setup-panel h1 {
+    font-size: 43px;
+  }
+  .setup-intro {
+    font-size: 10px;
+    margin-bottom: 15px;
+  }
+  .setup-tabs {
+    gap: 22px;
+  }
+  .setup-tabs button {
+    font-size: 10px;
+    padding: 11px 0;
+  }
+  .option-heading {
+    font-size: 7px;
+    margin-top: 16px;
+  }
+  .destination-option {
+    min-height: 80px;
+    padding: 8px 10px;
+    gap: 12px;
+  }
+  .option-copy strong {
+    font-size: 16px;
+  }
+  .route-art {
+    width: 66px;
+    height: 61px;
+  }
+  .setup-footer {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    left: 5%;
+    right: 5%;
+    padding-top: 15px;
+  }
+  .setup-summary strong {
+    font-size: 13px;
+    margin: 6px 0;
+  }
+  .setup-summary > .eyebrow {
+    display: none;
+  }
+  .setup-summary small {
+    font-size: 6px;
+  }
+  .setup-footer .primary {
+    min-height: 45px;
+  }
+  .setup-bottom {
+    font-size: 6px;
+    gap: 5px;
+  }
+  .setup-bottom > span {
+    gap: 4px;
+  }
+  .setup-bottom kbd {
+    font-size: 6px;
+  }
+  .setup-bottom a {
+    font-size: 6px;
+  }
+  .vehicle-sketch {
+    width: 85px;
+  }
+  .garage-option .option-copy strong {
+    font-size: 15px;
+  }
+  .garage-option .option-copy small {
+    font-size: 6px;
+  }
+  .setup-header-actions {
+    gap: 6px;
+  }
+  .setup-header .icon-button {
+    width: 33px;
+    height: 33px;
+  }
+}
+@media (pointer: coarse) {
+  .setup-bottom > span {
+    font-size: 0;
+  }
+  .setup-bottom kbd {
+    display: none;
+  }
+  .setup-touch-note {
+    display: inline;
+    font-size: 7px;
+  }
+}
+@media (max-height: 650px) {
+  .race-setup .setup-panel {
+    margin-bottom: 200px;
+  }
+  .setup-footer {
+    position: relative;
+    margin: 0 4%;
+    left: auto;
+    right: auto;
+  }
+  .setup-panel {
+    margin-bottom: 35px !important;
+  }
+  .preview-caption {
+    display: none;
+  }
+}
+@media (min-width: 901px) {
+  .preview-caption {
+    top: 118px;
+    bottom: auto;
+  }
+}
+/* Keep preview text readable over bright snow and roadside signs. */
+.preview-caption {
+  padding: 18px 20px;
+  background: color-mix(in srgb, var(--setup-surface) 94%, transparent);
+  border-left: 2px solid var(--accent);
+  text-shadow: none;
+}
+.home:has(.subpanel) .menu-footer {
+  display: none;
+}
+.home:has(.subpanel) .subpanel {
+  padding-bottom: 36px;
+}

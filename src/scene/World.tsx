@@ -1,3 +1,4 @@
+import { BiomeWorld } from "./BiomeWorld";
 import { useMemo, useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 import { curve, trackAt, nearest, obstacles } from "../game/track";
@@ -24,13 +25,13 @@ function ribbon(offset: number, width: number, y: number) {
   g.computeVertexNormals();
   return g;
 }
-type Item = {
+export type Item = {
   p: [number, number, number];
   s: [number, number, number];
   r?: number;
   color?: string;
 };
-function Instances({
+export function Instances({
   items,
   kind,
   color,
@@ -77,7 +78,7 @@ const random = (n: number) => {
   const a = Math.sin(n * 127.1 + 311.7) * 43758.5453;
   return a - Math.floor(a);
 };
-function Track() {
+export function Track() {
   const geometries = useMemo(
     () => [
       ribbon(0, 19, 0.025),
@@ -356,7 +357,7 @@ function Landmarks() {
     </group>
   );
 }
-function Gates() {
+export function Gates() {
   const ref = useRef<THREE.Group>(null);
   useFrame(() => {
     if (!ref.current) return;
@@ -387,7 +388,7 @@ function Gates() {
     </group>
   );
 }
-function Panorama() {
+export function Panorama() {
   const night = useSettings((s) => s.theme === "dark");
   const peaks = useMemo(
     () =>
@@ -460,11 +461,13 @@ function Panorama() {
   );
 }
 export function World() {
+  const mapId = useSettings((s) => s.mapId);
   const night = useSettings((s) => s.theme === "dark");
   const island = useMemo(() => {
     const g = new THREE.CylinderGeometry(190, 205, 16, 18);
     return g;
   }, []);
+  if (mapId !== "alpine") return <BiomeWorld mapId={mapId} />;
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -9, 0]} receiveShadow>
@@ -490,6 +493,7 @@ export function World() {
       {Array.from({ length: 15 }, (_, i) => {
         const x = -200 - random(i) * 190,
           z = -220 + random(i + 5) * 400;
+        if (mapId !== "alpine") return <BiomeWorld mapId={mapId} />;
         return (
           <mesh
             key={i}

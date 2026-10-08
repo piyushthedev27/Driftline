@@ -1,6 +1,6 @@
 # DRIFT LINE
 
-A self-contained, playable low-poly arcade racer built from the supplied Markdown brief and all three visual references. Race two laps through eight ordered checkpoint gates around Alpine Coast. Finish within six minutes; your best time stays on this device.
+A self-contained, playable low-poly arcade racer built from the supplied Markdown brief and all three visual references. Choose from three destinations, three vehicles and four lighting themes. Race two laps through eight ordered checkpoint gates per lap. Finish within six minutes; separate best times for every map and vehicle stay on this device.
 
 Developed by [piyushthedev27](https://github.com/piyushthedev27).
 
@@ -86,3 +86,15 @@ Race phases are `MENU`, `COUNTDOWN`, `PLAYING`, `PAUSED`, `FINISHED` and `GAME_O
 ## Future upgrades
 
 Replace the modular car with an authored local GLB, add a sculpted elevation-aware circuit, richer rock/shore meshes, recorded audio, ghost replays, more routes, and optional touch/gamepad input. Preserve the current runtime/UI separation when expanding these systems.
+
+
+## World Tour expansion
+
+- **Destinations:** Alpine Coast, Redrock Canyon, Frostpine Valley. Each has a different circuit, scenery, route preview and minimap.
+- **Garage:** Vortex GT sports coupe, Scout RS rally hatch, Monarch V8 muscle coupe. Each has distinct geometry, handling and boost limits; all support five paint colors.
+- **Atmosphere:** Daylight, Golden Hour, Midnight and Overcast change scene lighting, fog and interface accents. Road grip is unchanged.
+- **Setup:** Destination, Garage and Atmosphere tabs show a live 3D preview. Selections survive reload. Map and vehicle changes are locked during races; restarting preserves the current setup.
+- **Progress:** Best times are stored per map/vehicle. Existing Alpine GT records migrate automatically. Resetting appearance settings preserves records and the selected map/vehicle.
+- **Mobile:** Responsive setup and existing touch driving controls are retained.
+
+The feature list and implementation phases are in [docs/EXPANSION-PLAN.md](docs/EXPANSION-PLAN.md). Models and environments remain procedural, with arcade handling and mostly flat road surfaces.

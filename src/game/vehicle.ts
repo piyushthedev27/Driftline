@@ -1,3 +1,4 @@
+import { getVehicle, type VehicleId } from "./catalog";
 import { nearest, trackAt, LENGTH } from "./track";
 import { resolveCollisions } from "./collision";
 export type Input = {
@@ -16,10 +17,13 @@ export const idleInput: Input = {
   drift: false,
   boost: false,
 };
-export function newVehicle() {
+export function newVehicle(vehicleId: VehicleId = "gt") {
   const p = trackAt(0);
   return {
     ...p,
+    vehicleId,
+    halfWidth: getVehicle(vehicleId).halfWidth,
+    halfLength: getVehicle(vehicleId).halfLength,
     vx: 0,
     vz: 0,
     speed: 0,
@@ -42,6 +46,7 @@ export function newVehicle() {
 }
 export type Vehicle = ReturnType<typeof newVehicle>;
 export function stepVehicle(v: Vehicle, k: Input, dt: number) {
+  const spec = getVehicle(v.vehicleId);
   const near = nearest(v.x, v.z),
     offroad = near.distance > 7.5;
   v.cooldown = Math.max(0, v.cooldown - dt);
@@ -54,27 +59,32 @@ export function stepVehicle(v: Vehicle, k: Input, dt: number) {
   v.nitro = Math.min(100, v.nitro - used + (v.boosting ? 0 : 9 * dt));
   v.nitroUsed += used;
   let acceleration = k.up
-    ? 24 * (1 - Math.max(0, forward) / (v.boosting ? 76 : 54))
+    ? spec.acceleration *
+      (1 - Math.max(0, forward) / (v.boosting ? spec.boostMax : spec.normalMax))
     : k.down
       ? forward > 1
-        ? -40
+        ? -spec.brake
         : -12
       : 0;
-  if (v.boosting) acceleration += 21;
-  const drag = offroad ? 1.7 : v.drifting ? 0.55 : 0.19;
+  if (v.boosting) acceleration += spec.boostAcceleration;
+  const drag = offroad ? spec.offroadDrag : v.drifting ? 0.55 : 0.19;
   let longitudinal = forward + acceleration * dt - forward * drag * dt;
-  longitudinal = Math.max(-13, Math.min(v.boosting ? 76 : 56, longitudinal));
+  longitudinal = Math.max(
+    -13,
+    Math.min(v.boosting ? spec.boostMax : spec.normalMax + 2, longitudinal),
+  );
   const delta = longitudinal - forward;
   v.vx += Math.sin(v.yaw) * delta;
   v.vz += Math.cos(v.yaw) * delta;
   v.steer += (Number(k.left) - Number(k.right) - v.steer) * Math.min(1, dt * 9);
   v.yaw +=
-    ((v.steer * longitudinal * 0.035) / (1 + Math.abs(longitudinal) * 0.018)) *
+    ((v.steer * longitudinal * spec.steering) /
+      (1 + Math.abs(longitudinal) * 0.018)) *
     dt *
     (v.drifting ? 1.5 : 1);
   const targetX = Math.sin(v.yaw) * longitudinal,
     targetZ = Math.cos(v.yaw) * longitudinal,
-    grip = 1 - Math.exp(-(v.drifting ? 2.1 : 11) * dt);
+    grip = 1 - Math.exp(-(v.drifting ? spec.driftGrip : spec.grip) * dt);
   v.vx += (targetX - v.vx) * grip;
   v.vz += (targetZ - v.vz) * grip;
   v.x += v.vx * dt;

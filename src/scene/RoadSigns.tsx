@@ -1,3 +1,5 @@
+import { useSettings } from "../store";
+import { getMap } from "../game/catalog";
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { trackAt } from "../game/track";
@@ -8,21 +10,21 @@ export function RoadSigns() {
       [
         {
           t: 0.015,
-          title: "ALPINE COAST",
+          title: getMap(useSettings.getState().mapId).name.toUpperCase(),
           sub: "TIME ATTACK   /   2 LAPS",
           arrow: false,
         },
-        { t: 0.19, title: "SUMMIT PASS", sub: "TUNNEL AHEAD", arrow: false },
+        { t: 0.19, title: "FIND YOUR LINE", sub: "CURVES AHEAD", arrow: false },
         {
           t: 0.45,
-          title: "PORTO ALPINO",
+          title: "SCENIC ROUTE",
           sub: "TAKE THE SCENIC ROUTE",
           arrow: false,
         },
         { t: 0.73, title: "SLOW", sub: "TIGHT CORNER", arrow: true },
         {
           t: 0.88,
-          title: "COAST ROAD",
+          title: "HOME STRETCH",
           sub: "START / FINISH  →",
           arrow: false,
         },

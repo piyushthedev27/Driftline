@@ -1,3 +1,4 @@
+import { getMap, getVehicle, recordKey } from "../game/catalog";
 import type { PointerEvent } from "react";
 import {
   Pause,
@@ -92,11 +93,12 @@ export const formatTime = (n: number) =>
     .padStart(2, "0")}:${(n % 60).toFixed(2).padStart(5, "0")}`;
 export function MiniMap({ menu = false }: { menu?: boolean }) {
   const t = useTelemetry();
+  const mapId = useSettings((s) => s.mapId);
   return (
     <svg
       className={menu ? "map menu-map" : "map"}
       viewBox="0 0 170 180"
-      aria-label="Alpine coast circuit map"
+      aria-label={`${getMap(mapId).name} circuit map`}
     >
       <path
         d={mapPath}
@@ -124,17 +126,21 @@ export function Hud() {
   const t = useTelemetry(),
     g = useGame(),
     s = useSettings();
+  const spec = getVehicle(s.vehicleId),
+    best = s.records[recordKey(s.mapId, s.vehicleId)];
   const speed = Math.round(Math.abs(t.speed) * 3.6),
     gear =
       t.speed < -0.5
         ? "R"
         : speed < 2
           ? "N"
-          : Math.min(6, Math.floor(speed / 43) + 1);
+          : Math.min(spec.gears, Math.floor(speed / 43) + 1);
   return (
     <div className="hud">
       <div className="race-info">
-        <span className="eyebrow">ALPINE COAST / TIME ATTACK</span>
+        <span className="eyebrow">
+          {getMap(s.mapId).name.toUpperCase()} / TIME ATTACK
+        </span>
         <div className="lap">
           <span>{Math.min(t.lap, 2).toString().padStart(2, "0")}</span>
           <small>/ 02 LAPS</small>
@@ -150,7 +156,7 @@ export function Hud() {
         <span className="eyebrow">RACE TIME</span>
         <strong>{formatTime(t.elapsed)}</strong>
         <span className="tiny">
-          BEST {s.best ? formatTime(s.best) : "— — : — —"}
+          BEST {best ? formatTime(best) : "— — : — —"}
         </span>
       </div>
       <div className="top-actions">
@@ -204,7 +210,7 @@ export function Hud() {
             stroke="#d8edaa"
             strokeWidth="4"
             pathLength="100"
-            strokeDasharray={`${Math.min((speed / 274) * 100, 100)} 100`}
+            strokeDasharray={`${Math.min((speed / (spec.boostMax * 3.6)) * 100, 100)} 100`}
           />
         </svg>
         <div className="speed-number">{speed.toString().padStart(3, "0")}</div>
@@ -222,7 +228,7 @@ export function Hud() {
           ))}
         </div>
         <span className="dial-label">
-          RPM × 1000 <b>274 MAX</b>
+          RPM × 1000 <b>{Math.round(spec.boostMax * 3.6)} MAX</b>
         </span>
       </div>
       <div className={`nitro ${t.boosting ? "boosting" : ""}`}>
@@ -256,9 +262,7 @@ export function Hud() {
         </span>
       </div>
       {isTouchDevice() &&
-        (g.phase === "PLAYING" || g.phase === "COUNTDOWN") && (
-          <TouchControls />
-        )}
+        (g.phase === "PLAYING" || g.phase === "COUNTDOWN") && <TouchControls />}
       {t.drifting && (
         <div className="drift-label">
           DRIFT <span>HOLD THE LINE</span>

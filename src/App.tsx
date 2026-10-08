@@ -1,3 +1,4 @@
+import { getTheme } from "./game/catalog";
 import { Component, type ReactNode } from "react";
 import { GameScene } from "./scene/GameScene";
 import { Menus, Countdown } from "./ui/Menus";
@@ -37,7 +38,15 @@ export default function App() {
     theme = useSettings((s) => s.theme);
   useKeyboard();
   return (
-    <main className={`app ${theme} phase-${phase.toLowerCase()}`}>
+    <main
+      className={`app ${theme} phase-${phase.toLowerCase()}`}
+      style={
+        {
+          "--accent": getTheme(theme).accent,
+          "--setup-surface": getTheme(theme).surface,
+        } as React.CSSProperties
+      }
+    >
       <Boundary>
         {supported ? (
           <GameScene />

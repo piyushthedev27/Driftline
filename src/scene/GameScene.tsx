@@ -1,3 +1,4 @@
+import { getTheme, getMap } from "../game/catalog";
 import { useRef, useEffect, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
@@ -58,8 +59,7 @@ function Simulation() {
         accumulator.current -= 1 / 120;
       }
       if (runtime.finished) {
-        if (!settings.best || runtime.elapsed < settings.best)
-          settings.set({ best: runtime.elapsed });
+        settings.saveRecord(runtime.elapsed);
         g.setPhase("FINISHED");
         if (settings.sound) audio.beep(880, 0.5);
       } else if (runtime.elapsed >= 360) g.setPhase("GAME_OVER");
@@ -83,7 +83,13 @@ function Simulation() {
         4.8,
         runtime.z + Math.cos(yaw + 2.45 + Math.sin(t * 0.1) * 0.13) * 11,
       );
-      look.set(runtime.x, 1.1, runtime.z);
+      const offset = window.innerWidth > 900 ? 2.3 : 0,
+        angle = yaw + 2.45 + Math.sin(t * 0.1) * 0.13;
+      look.set(
+        runtime.x - Math.cos(angle) * offset,
+        1.1,
+        runtime.z + Math.sin(angle) * offset,
+      );
     } else {
       const dist = 10.1 + Math.abs(runtime.speed) * 0.035;
       target.set(
@@ -192,7 +198,8 @@ function Simulation() {
 }
 export function GameScene() {
   const phase = useGame((s) => s.phase);
-  const { theme, quality, effects } = useSettings();
+  const { theme, quality, effects, mapId } = useSettings();
+  const atmosphere = getTheme(theme);
   const night = theme === "dark";
   const [lost, setLost] = useState(false);
   useEffect(() => () => audio.update(0, false, false, false, false, false), []);
@@ -216,20 +223,30 @@ export function GameScene() {
           });
         }}
       >
-        <color attach="background" args={[night ? "#142f44" : "#b9d5d1"]} />
-        <fog attach="fog" args={[night ? "#142f44" : "#b9d5d1", 140, 650]} />
-        <ambientLight intensity={night ? 0.55 : 1.15} />
+        <color
+          attach="background"
+          args={[theme === "light" ? getMap(mapId).sky : atmosphere.sky]}
+        />
+        <fog
+          attach="fog"
+          args={[
+            theme === "light" ? getMap(mapId).sky : atmosphere.sky,
+            atmosphere.fogNear,
+            atmosphere.fogFar,
+          ]}
+        />
+        <ambientLight intensity={atmosphere.ambient} />
         <hemisphereLight
           args={[
             night ? "#81b3cf" : "#e7f4f0",
             night ? "#253934" : "#8c9770",
-            night ? 0.8 : 1.3,
+            atmosphere.hemi,
           ]}
         />
         <directionalLight
-          position={[-60, 100, 40]}
-          intensity={night ? 0.65 : 2.5}
-          color={night ? "#a6cddd" : "#fff0cf"}
+          position={theme === "sunset" ? [-100, 35, 50] : [-60, 100, 40]}
+          intensity={atmosphere.sunIntensity}
+          color={atmosphere.sun}
           castShadow={quality !== "low"}
           shadow-mapSize={quality === "high" ? 2048 : 1024}
           shadow-camera-left={-190}
@@ -240,7 +257,7 @@ export function GameScene() {
           shadow-bias={-0.001}
         />
         <Reflections intensity={night ? 0.12 : 0.4} />
-        <World />
+        <World key={mapId} />
         <Simulation />
         {quality === "high" && phase === "MENU" && (
           <ContactShadows

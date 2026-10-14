@@ -1,8 +1,12 @@
+import { useSettings } from "../src/store";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import { Car } from "../src/scene/Car";
 import { Reflections } from "../src/scene/Reflections";
+const car = new URLSearchParams(location.search).get("car");
+if (car === "gt" || car === "rally" || car === "muscle")
+  useSettings.getState().set({ vehicleId: car });
 const view = new URLSearchParams(location.search).get("view");
 const position: [number, number, number] =
   view === "front" ? [6, 2.8, 7] : view === "side" ? [8, 2, 0] : [-6, 2.6, -7];

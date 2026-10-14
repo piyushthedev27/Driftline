@@ -261,13 +261,14 @@ export function GameScene() {
         <Simulation />
         {quality === "high" && phase === "MENU" && (
           <ContactShadows
-            position={[runtime.x, 0.01, runtime.z]}
+            key={`${mapId}-${useSettings.getState().vehicleId}`}
+            position={[runtime.x, 0.135, runtime.z]}
             opacity={0.3}
             scale={18}
             blur={2.5}
             far={4}
             resolution={128}
-            frames={1}
+            frames={2}
           />
         )}
         {effects && quality === "high" && (

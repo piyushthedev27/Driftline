@@ -27,7 +27,10 @@ class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
 }
 function supportsWebGL() {
   try {
-    return !!document.createElement("canvas").getContext("webgl2");
+    const gl = document.createElement("canvas").getContext("webgl2");
+    const supported = !!gl;
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    return supported;
   } catch {
     return false;
   }
@@ -59,15 +62,15 @@ export default function App() {
             </p>
           </div>
         )}
+        {supported && (
+          <>
+            <div className="vignette" />
+            {phase !== "MENU" && <Hud />}
+            <Menus />
+            <Countdown />
+          </>
+        )}
       </Boundary>
-      {supported && (
-        <>
-          <div className="vignette" />
-          {phase !== "MENU" && <Hud />}
-          <Menus />
-          <Countdown />
-        </>
-      )}
     </main>
   );
 }

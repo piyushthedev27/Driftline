@@ -1,7 +1,7 @@
 import { BiomeWorld } from "./BiomeWorld";
 import { useMemo, useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
-import { curve, trackAt, nearest, obstacles } from "../game/track";
+import { curve, trackAt, nearest, obstacles, LENGTH } from "../game/track";
 import { useSettings, runtime } from "../store";
 import { useFrame } from "@react-three/fiber";
 import { RoadSigns } from "./RoadSigns";
@@ -107,7 +107,7 @@ export function Track() {
           const p = trackAt(i / 250, 9.7 * side);
           return {
             p: [p.x, 0.84, p.z] as [number, number, number],
-            s: [0.16, 0.36, 3.25] as [number, number, number],
+            s: [0.16, 0.36, LENGTH / 250 + 0.3] as [number, number, number],
             r: p.yaw,
           };
         }),
@@ -132,7 +132,7 @@ export function Track() {
           const p = trackAt(i / 170, 7.7 * side);
           return {
             p: [p.x, 0.104, p.z] as [number, number, number],
-            s: [0.58, 0.025, 2] as [number, number, number],
+            s: [0.58, 0.025, LENGTH / 340] as [number, number, number],
             r: p.yaw,
           };
         }),

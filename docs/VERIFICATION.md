@@ -52,3 +52,17 @@ Browser fixtures verified time-limit game over, restart, ordered-gate completion
 - Screenshot review prompted improved preview text contrast and removal of the settings footer that crowded the reset control. Existing touch controls and developer credits are retained.
 - Images are in `artifacts/expansion-*.png`; reproducible browser check: `node tests/browser-expansion.cjs` (uses this machine's bundled Playwright and Chrome paths).
 - Vehicles and scenery are procedural low-poly geometry; weather is visual and roads remain mostly flat. No backend or online leaderboard is included.
+
+## Visual repair — 2026-10-09
+
+Corrected the scaled rally body so wheel openings retain circular clearance; corrected shell face directions and removed noisy per-triangle color variation. Attached the rally spoiler with supports and repositioned rear lights; removed floating window trim. Road rail/curb segment lengths now follow each circuit length. Raised menu contact shadows above the road and refreshed them when changing car/map. Moved the first roadside sign away from the preview and constrained sign lettering.
+
+Short screens scroll setup controls and the start button together. Preview cards are smaller. Renderer failures replace the interface instead of leaving interactive menus over an error, and graphics-loss messages appear above all overlays. The WebGL capability probe releases its temporary context.
+
+Validation: production compilation passed; all 24 gameplay/geometry tests passed; expansion browser checks passed without page errors; 360×640 and 844×390 layout checks passed. Rally front/side and garage screenshots inspected. The user's unspecified error was not reproduced; no claim is made about a particular error message without its text.
+
+## Reference-led model revision — 2026-10-09
+
+Reopened the supplied sports-car reference and compared controlled front/side/rear renders. Replaced the hood's dense wheel-arch-derived strips with independent broad panel topology. Fender shoulders now use a deliberate profile instead of following every circular arch sample. Retained full circular wheel clearance. Fitted GT headlight housings and hood vents to the painted surface, moved front intakes outside the bumper to remove intersections, and lowered the spoiler and its brackets together.
+
+The showcase accepts `?car=gt|rally|muscle&view=front|side|rear`. `node tests/browser-models.cjs` renders all nine views; outputs are `artifacts/model-*.png`. Models remain original procedural interpretations, not exact replicas of the supplied reference.

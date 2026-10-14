@@ -2149,3 +2149,38 @@ kbd {
 .home:has(.subpanel) .subpanel {
   padding-bottom: 36px;
 }
+/* Short viewports scroll the entire setup instead of hiding controls behind a fixed footer. */
+@media (max-height: 740px) {
+  .race-setup .setup-footer {
+    position: relative;
+    inset: auto;
+    margin: 24px 5% 0;
+  }
+  .race-setup .setup-panel {
+    margin-bottom: 30px !important;
+  }
+  .race-setup .preview-caption {
+    display: none;
+  }
+}
+@media (min-width: 901px) {
+  .preview-caption {
+    width: 290px;
+    max-width: 27%;
+    right: 4%;
+    top: 100px;
+  }
+  .preview-caption h2 {
+    font-size: 27px;
+    margin: 8px 0;
+  }
+  .preview-caption p {
+    font-size: 11px;
+  }
+}
+.fatal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #142b30;
+}

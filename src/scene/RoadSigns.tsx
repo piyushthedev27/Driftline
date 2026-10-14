@@ -9,7 +9,7 @@ export function RoadSigns() {
     () =>
       [
         {
-          t: 0.015,
+          t: 0.045,
           title: getMap(useSettings.getState().mapId).name.toUpperCase(),
           sub: "TIME ATTACK   /   2 LAPS",
           arrow: false,
@@ -41,7 +41,7 @@ export function RoadSigns() {
         ctx.fillStyle = "#ecedcd";
         ctx.textAlign = "center";
         ctx.font = "bold 47px Arial";
-        ctx.fillText(sign.title, 256, 111);
+        ctx.fillText(sign.title, 256, 111, 460);
         ctx.font = "22px Arial";
         ctx.fillText(sign.sub, 256, 170);
         const texture = new THREE.CanvasTexture(canvas);

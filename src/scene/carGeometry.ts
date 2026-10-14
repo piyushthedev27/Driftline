@@ -45,15 +45,43 @@ export function polygon(vertices: V3[], indices?: number[]) {
   g.computeVertexNormals();
   return g;
 }
+// Broad planar hood and shoulder bands; wheel cutouts do not distort the painted surface.
+export function bodySurface(x: number, z: number, scale: V3 = [1, 1, 1]) {
+  const d = dimensions(z / scale[2]),
+    u = Math.min(1, Math.abs(x) / (d.width * scale[0]));
+  const fender = Math.max(
+    ...WHEEL_Z.map(
+      (w) => 1.025 - Math.max(0, Math.abs(z - w * scale[2]) - 0.28) * 0.58,
+    ),
+  );
+  const shoulder = Math.max(d.shoulder * scale[1], fender),
+    ridge = Math.max(d.top * scale[1], shoulder + 0.015),
+    hood = d.top * scale[1] + 0.018;
+  if (u <= 0.55) return hood;
+  if (u <= 0.82) return THREE.MathUtils.lerp(hood, ridge, (u - 0.55) / 0.27);
+  return THREE.MathUtils.lerp(ridge, shoulder, (u - 0.82) / 0.18);
+}
 // A continuous painted shell with open wheel wells and raised fender shoulders.
-export function bodyGeometry() {
+export function bodyGeometry(scale: V3 = [1, 1, 1]) {
+  const wheelCenters = WHEEL_Z.map((z) => z * scale[2]);
+  const scaledDimensions = (z: number) => {
+    const d = dimensions(z / scale[2]);
+    return {
+      width: d.width * scale[0],
+      top: d.top * scale[1],
+      shoulder: d.shoulder * scale[1],
+    };
+  };
   const positions: number[] = [],
     colors: number[] = [];
   const zs = Array.from(
     new Set([
-      ...sections.map((s) => s[0]),
-      ...Array.from({ length: 51 }, (_, i) => -2.43 + (i * 4.91) / 50),
-      ...WHEEL_Z.flatMap((z) =>
+      ...sections.map((s) => s[0] * scale[2]),
+      ...Array.from(
+        { length: 25 },
+        (_, i) => (-2.43 + (i * 4.91) / 24) * scale[2],
+      ),
+      ...wheelCenters.flatMap((z) =>
         Array.from(
           { length: 17 },
           (_, i) => z + 0.51 * Math.cos((i / 16) * Math.PI),
@@ -63,7 +91,7 @@ export function bodyGeometry() {
   ).sort((a, b) => a - b);
   const add = (a: V3, b: V3, c: V3) => {
     positions.push(...a, ...b, ...c);
-    const shade = 0.97 + Math.sin(a[2] * 8 + b[0] * 3) * 0.025;
+    const shade = 1;
     colors.push(...Array(9).fill(shade));
   };
   const quad = (a: V3, b: V3, c: V3, d: V3) => {
@@ -73,47 +101,77 @@ export function bodyGeometry() {
   const arch = (z: number) =>
     Math.max(
       0.27,
-      ...WHEEL_Z.map((wz) =>
+      ...wheelCenters.map((wz) =>
         Math.abs(z - wz) <= 0.51
           ? 0.455 + Math.sqrt(Math.max(0, 0.51 ** 2 - (z - wz) ** 2))
           : 0.27,
       ),
     );
-  const row = (z: number): V3[] => {
-    const d = dimensions(z),
-      high = Math.max(d.shoulder, arch(z) + 0.06);
-    return [-1, -0.86, -0.58, 0, 0.58, 0.86, 1].map((x) => [
+  const topZs = [
+    ...new Set([
+      ...sections.map((s) => s[0] * scale[2]),
+      ...wheelCenters.flatMap((z) => [z - 0.78, z - 0.28, z + 0.28, z + 0.78]),
+    ]),
+  ]
+    .filter((z) => z >= -2.43 * scale[2] && z <= 2.48 * scale[2])
+    .sort((a, b) => a - b);
+  const topRows: V3[][] = topZs.map((z) => {
+    const d = scaledDimensions(z);
+    return [-1, -0.82, -0.55, 0.55, 0.82, 1].map((x) => [
       x * d.width,
-      Math.abs(x) === 1
-        ? high
-        : Math.abs(x) === 0.86
-          ? Math.max(d.top - 0.035, high + 0.015)
-          : d.top + (x === 0 ? 0.008 : 0.018),
+      bodySurface(x * d.width, z, scale),
+      z,
+    ]);
+  });
+  const row = (z: number): V3[] => {
+    const i = Math.max(
+      0,
+      Math.min(
+        topZs.length - 2,
+        topZs.findIndex((v, i) => i < topZs.length - 1 && z <= topZs[i + 1]),
+      ),
+    );
+    const t = Math.max(
+      0,
+      Math.min(1, (z - topZs[i]) / (topZs[i + 1] - topZs[i])),
+    );
+    return topRows[i].map((p, j) => [
+      THREE.MathUtils.lerp(p[0], topRows[i + 1][j][0], t),
+      THREE.MathUtils.lerp(p[1], topRows[i + 1][j][1], t),
       z,
     ]);
   };
+  for (let i = 0; i < topRows.length - 1; i++) {
+    const a = topRows[i],
+      b = topRows[i + 1];
+    for (let j = 0; j < a.length - 1; j++) quad(a[j], b[j], b[j + 1], a[j + 1]);
+  }
   for (let i = 0; i < zs.length - 1; i++) {
     const z = zs[i],
       nz = zs[i + 1],
       a = row(z),
       b = row(nz);
-    for (let j = 0; j < a.length - 1; j++) quad(a[j], b[j], b[j + 1], a[j + 1]);
+
     for (const side of [-1, 1]) {
-      const ai = side < 0 ? 0 : 6,
-        d = dimensions(z),
-        nd = dimensions(nz);
-      quad(
+      const ai = side < 0 ? 0 : a.length - 1,
+        d = scaledDimensions(z),
+        nd = scaledDimensions(nz);
+      const corners: V3[] = [
         a[ai],
         [side * (d.width - 0.035), arch(z), z],
         [side * (nd.width - 0.035), arch(nz), nz],
         b[ai],
-      );
+      ];
+      if (side > 0) corners.reverse();
+      quad(corners[0], corners[1], corners[2], corners[3]);
     }
   }
   for (const z of [zs[0], zs[zs.length - 1]]) {
     const r = row(z);
     for (let i = 0; i < r.length - 1; i++)
-      quad(r[i], r[i + 1], [r[i + 1][0], 0.27, z], [r[i][0], 0.27, z]);
+      if (z < 0)
+        quad(r[i], r[i + 1], [r[i + 1][0], 0.27, z], [r[i][0], 0.27, z]);
+      else quad(r[i + 1], r[i], [r[i][0], 0.27, z], [r[i + 1][0], 0.27, z]);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));

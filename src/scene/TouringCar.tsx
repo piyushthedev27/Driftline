@@ -45,7 +45,7 @@ export const TouringCar = forwardRef<THREE.Group, { kind: "rally" | "muscle" }>(
       flame = useRef<THREE.Group>(null),
       lamps = useRef<THREE.MeshStandardMaterial[]>([]),
       target = useMemo(() => new THREE.Object3D(), []);
-    const body = useMemo(bodyGeometry, []),
+    const body = useMemo(() => bodyGeometry(scale), [kind]),
       tyre = useMemo(tyreGeometry, []);
     const cabin = useMemo(
       () =>
@@ -129,7 +129,7 @@ export const TouringCar = forwardRef<THREE.Group, { kind: "rally" | "muscle" }>(
             color="#e5edff"
           />
         )}
-        <mesh geometry={body} scale={scale} castShadow>
+        <mesh geometry={body} castShadow>
           <meshStandardMaterial
             color={color}
             vertexColors
@@ -167,6 +167,9 @@ export const TouringCar = forwardRef<THREE.Group, { kind: "rally" | "muscle" }>(
             />
             <Box p={[0, 1.6, -0.35]} s={[0.45, 0.13, 0.43]} />
             <Box p={[0, 1.55, -1.41]} s={[1.6, 0.07, 0.29]} />
+            {[-0.58, 0.58].map((x) => (
+              <Box key={x} p={[x, 1.43, -1.32]} s={[0.08, 0.2, 0.12]} />
+            ))}
           </>
         ) : (
           <>
@@ -222,10 +225,6 @@ export const TouringCar = forwardRef<THREE.Group, { kind: "rally" | "muscle" }>(
                       [side * 0.88, 1.045, -1.38],
                     ]
               }
-            />
-            <Box
-              p={[side * (rally ? 0.795 : 0.82), 1.19, -0.6]}
-              s={[0.035, 0.42, 0.065]}
             />
             <Box
               p={[side * (rally ? 1.06 : 1.13), 1.05, rally ? 0.46 : 0.33]}
@@ -305,12 +304,12 @@ export const TouringCar = forwardRef<THREE.Group, { kind: "rally" | "muscle" }>(
             <mesh
               position={[
                 side * (rally ? 0.67 : 0.65),
-                rally ? 0.83 : 0.75,
+                rally ? 0.64 : 0.75,
                 rally ? -1.97 : -2.55,
               ]}
             >
               <boxGeometry
-                args={[rally ? 0.12 : 0.48, rally ? 0.28 : 0.09, 0.035]}
+                args={[rally ? 0.28 : 0.48, rally ? 0.14 : 0.09, 0.035]}
               />
               <meshStandardMaterial
                 ref={(m) => {
